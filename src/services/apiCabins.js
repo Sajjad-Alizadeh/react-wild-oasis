@@ -20,7 +20,7 @@ export async function deleteCabin(id) {
   return data;
 }
 
-export async function addCabin(newCabin) {
+export async function createCabin(newCabin) {
   // Extract formatted url (this url returned from server, after the image uploaded) 
   const imageName = `${Math.random()}-${newCabin.image.name}`.replace("/", "");
   const imagePath = `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
