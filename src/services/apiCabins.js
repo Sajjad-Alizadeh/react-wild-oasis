@@ -20,19 +20,31 @@ export async function deleteCabin(id) {
   return data;
 }
 
-export async function createCabin(newCabin) {
-  // Extract formatted url (this url returned from server, after the image uploaded) 
-  const imageName = `${Math.random()}-${newCabin.image.name}`.replace("/", "");
-  const imagePath = `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
+export async function createEditCabin(newCabin, id) {
+  const hasImagePath = newCabin.image?.startsWith?.(supabaseUrl);
 
-  // 1. Create cabin
-  const { data, error } = await supabase
-    .from("cabins")
-    .insert([{ ...newCabin, image: imagePath }])
-    .select();
+  // Extract formatted url (this url returned from server, after the image uploaded)
+  const imageName = `${Math.random()}-${newCabin.image.name}`.replace("/", "");
+  const imagePath = hasImagePath
+    ? newCabin.image
+    : `${supabaseUrl}/storage/v1/object/public/cabin-images/${imageName}`;
+
+  let query = supabase.from("cabins");
+
+  // Edit
+  if (id) {
+    query = query.update({ ...newCabin, image: imagePath }).eq("id", id);
+  }
+
+  // Create
+  if (!id) {
+    query = query.insert([{ ...newCabin, image: imagePath }]);
+  }
+
+  const { data, error } = await query.select().single();
 
   if (error) {
-    throw new Error("Cabin could not be created");
+    throw new Error(`Cabin could not be ${id ? "edited" : "created"}`);
   }
 
   // 2. Upload image
