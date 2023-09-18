@@ -7,7 +7,6 @@ export default function SortBy({ options }) {
   const currentSort = searchParams.get("sortBy") || ""
 
   function handleOnChange(e) {
-    console.log("caleld");
     searchParams.set("sortBy", e.target.value);
     setSearchParams(searchParams);
   }
