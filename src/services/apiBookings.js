@@ -38,7 +38,7 @@ export async function getBookings({ filter, sortBy, page }) {
     throw new Error("Bookings could not be loaded");
   }
 
-  return {data, count};
+  return { data, count };
 }
 
 export async function getBooking(id) {
@@ -76,7 +76,6 @@ export async function getBookingsAfterDate(date) {
 export async function getStaysAfterDate(date) {
   const { data, error } = await supabase
     .from("bookings")
-    // .select('*')
     .select("*, guests(fullName)")
     .gte("startDate", date)
     .lte("startDate", getToday());
