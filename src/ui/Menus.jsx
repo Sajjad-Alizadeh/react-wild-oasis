@@ -87,6 +87,7 @@ function Toggle({ id }) {
   const { openId, close, open, setPosition } = useContext(MenusContext);
 
   function handleClick(e) {
+    e.stopPropagation(); // To close the menu when on more icon click (in case that the menu was opened)
     const rect = e.target.closest("button").getBoundingClientRect();
 
     // Calculate position of menu
@@ -107,7 +108,7 @@ function Toggle({ id }) {
 
 function List({ id, children }) {
   const { openId, position, close } = useContext(MenusContext);
-  const ref = useOutsideClick(close);
+  const ref = useOutsideClick(close, false);
   if (openId !== id) {
     return null;
   }
@@ -122,10 +123,10 @@ function List({ id, children }) {
 function Button({ icon, children, onClick }) {
   const { close } = useContext(MenusContext);
 
-function handleClick() {
-  onClick?.()
-  close()
-}
+  function handleClick() {
+    onClick?.();
+    close();
+  }
 
   return (
     <li>
